@@ -1843,7 +1843,7 @@ static void l2cap_sock_init(struct sock *sk, struct sock *parent)
 			break;
 		}
 
-		chan->imtu = L2CAP_DEFAULT_MTU;
+		chan->imtu = 0;
 		chan->omtu = 0;
 		if (!disable_ertm && sk->sk_type == SOCK_STREAM) {
 			chan->mode = L2CAP_MODE_ERTM;
