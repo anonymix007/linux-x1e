@@ -23,6 +23,22 @@
 		serial1 = &uart14;
 	};
 
+	connector {
+		compatible = "dp-connector";
+		label = "hdmi";
+		type = "full-size";
+		
+		pinctrl-0 = <&hdmi_hpd_default>;
+		pinctrl-names = "default";
+		hpd-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
+
+		port {
+			dp_connector_in: endpoint {
+				remote-endpoint = <&mdss_dp2_out>;
+			};
+		};
+	};
+
 	gpio-keys {
 		compatible = "gpio-keys";
 		pinctrl-0 = <&hall_int_n_default>;
@@ -810,6 +826,25 @@
 	data-lanes = <0 1>;
 };
 
+&mdss_dp2 {
+	status = "okay";
+	phys = <&mdss_dp2_phy>;
+	assigned-clock-parents = <&mdss_dp2_phy 0>,
+				 <&mdss_dp2_phy 1>;
+};
+
+&mdss_dp2_out {
+	data-lanes = <0 1>;
+
+	remote-endpoint = <&dp_connector_in>;
+};
+
+&mdss_dp2_phy {
+	vdda-phy-supply = <&vreg_l3j_0p8>;
+	vdda-pll-supply = <&vreg_l2j_1p2>;
+
+	status = "okay";
+};
 
 &mdss_dp3 {
 	compatible = "qcom,x1e80100-dp";
@@ -1048,6 +1083,12 @@
 		bias-disable;
 	};
 
+	hdmi_hpd_default: hdmi-hpd-state {
+		pins = "gpio126";
+		function = "gpio";
+		bias-pull-down;
+	};
+
 	kybd_default: kybd-default-state {
 		pins = "gpio67";
 		function = "gpio";
@@ -1242,6 +1283,10 @@
 
 &usb_1_ss1_qmpphy_out {
 	remote-endpoint = <&retimer_ss1_ss_in>;
+};
+
+&usb_1_ss2_qmpphy_dp_in {
+	/delete-property/ remote-endpoint;
 };
 
 &usb_2 {
